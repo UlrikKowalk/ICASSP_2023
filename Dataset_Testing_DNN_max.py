@@ -15,6 +15,7 @@ from Coordinates import Coordinates
 from Feature_DNN import Feature_DNN
 from NoiseTable import NoiseTable
 from inv_sabine import inv_sabine
+import gpuRIR
 
 
 class Dataset_Testing_DNN_max(Dataset):

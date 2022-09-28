@@ -29,23 +29,27 @@ list_files = [
     'coordinates_known_GADOAEfull_SNR_20_T60_0.5_uncertainty_0.09',
     'coordinates_known_GADOAEfull_SNR_20_T60_0.5_uncertainty_0.1',
 #
-    # 'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.0',
-    # 'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.01',
-    # 'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.02',
-    # 'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.03',
-    # 'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.04',
-    # 'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.05',
-    # 'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.06',
-    # 'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.07',
-    # 'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.08',
-    # 'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.09',
-    # 'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.1',
+    'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.0',
+    'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.01',
+    'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.02',
+    'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.03',
+    'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.04',
+    'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.05',
+    'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.06',
+    'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.07',
+    'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.08',
+    'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.09',
+    'coordinates_known_GADOAEmaxreduce_SNR_20_T60_0.5_uncertainty_0.1',
             ]
+
+filename = 'GADOAE_when_coordinates_change_0-50_BOTH'
 
 # new_list = []
 # for item in list_files:
 #     new_list.append(item.replace('0.5', '0.13'))
 # list_files = new_list
+# filename = filename.replace('0-50','0-13')
+
 
 x_labels = ['0.0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1.0']
 
@@ -162,7 +166,7 @@ axs[0].plot(data_srp_acc[0:11], 'k:', label='SRP-PHAT')
 axs[0].plot(data_music_acc[0:11], 'k--', label='MUSIC')
 axs[0].plot(data_dnn_acc[0:11], '-x', color = '0.0', label='GADOAE_max')
 axs[0].plot(data_dnn_acc[11:22], '-d', color = '0.0', label='GADOAE_full')
-# axs[0].plot(data_dnn_acc[22:33], 'k-', label='GADOAE_red')
+axs[0].plot(data_dnn_acc[22:33], 'k-', label='GADOAE_red')
 
 # plt.title('Effect of coordinate deviation on DOA estimation Accuracy [T60=0.5s, SNR=20dB]')
 axs[0].set_xticks(range(0, 11))
@@ -183,7 +187,7 @@ axs[1].plot(data_srp_rmse[0:11], 'k:', label='SRP-PHAT')
 axs[1].plot(data_music_rmse[0:11], 'k--', label='MUSIC')
 axs[1].plot(data_dnn_rmse[0:11], '-x', color = '0.0', label='GADOAE_max')
 axs[1].plot(data_dnn_rmse[11:22], '-d', color = '0.0', label='GADOAE_full')
-# axs[1].plot(data_dnn_rmse[22:33], 'k-', label='GADOAE_red')
+axs[1].plot(data_dnn_rmse[22:33], 'k-', label='GADOAE_red')
 
 # plt.title('Effect of coordinate deviation on DOA estimation performance')
 axs[1].set_xticks(range(0, 11))
@@ -198,7 +202,7 @@ axs[1].legend(loc='center left', bbox_to_anchor=(0.0, 1.1), framealpha=1.0)
 # plt.gcf().subplots_adjust(bottom=0.1)
 # plt.show()
 
-plt.savefig(f'GADOAE_when_coordinates_change_0-50_BOTH', bbox_inches='tight', transparent="True", pad_inches=0.1, dpi=300)
+plt.savefig(filename, bbox_inches='tight', transparent="True", pad_inches=0.1, dpi=300)
 plt.close()
 
 print('done.')
