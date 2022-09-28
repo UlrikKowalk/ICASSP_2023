@@ -14,11 +14,11 @@ from Dataset_Testing_DNN_max import Dataset_Testing_DNN_max
 from MUSIC import MUSIC
 from SRP_PHAT import SRP_PHAT
 
-NUM_SAMPLES = 10000
+NUM_SAMPLES = 10
 BATCH_SIZE = 1
 MAX_THETA = 360.0
 NUM_CLASSES = 72
-NUM_WORKERS = 16
+NUM_WORKERS = 1
 
 BASE_DIR_ML = os.getcwd() + ""
 SAMPLE_DIR_GENERATIVE = BASE_DIR_ML + "/libriSpeechExcerpt/"
@@ -26,7 +26,7 @@ NOISE_TABLE = BASE_DIR_ML + "/noise/noise_table.mat"
 
 LIST_SNR = [20]
 LIST_T60 = [0.5]
-LIST_UNCERTAINTY = [0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10]
+LIST_UNCERTAINTY = [0.00]#, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10]
 
 PARAMETERS = {'base_dir': BASE_DIR_ML,
               'sample_dir': SAMPLE_DIR_GENERATIVE,
@@ -49,8 +49,8 @@ PARAMETERS = {'base_dir': BASE_DIR_ML,
               'num_channels': 5,
               'max_sensor_spread': 0.2, #lookup noise: only up to 0.2
               'min_array_width': 0.2,
-              'rasterize_array': True,
-              'sensor_grid_digits': 3, #2: 0.01m
+              'rasterize_array': False,
+              'sensor_grid_digits': 2, #2: 0.01m
               'num_classes': 72,
               'num_samples': NUM_SAMPLES,
               'max_uncertainty': 0.00,
@@ -74,6 +74,14 @@ if __name__ == '__main__':
     print(f'Net: {args.net[1:-1]}')
 
     device = "cpu"
+    if torch.cuda.is_available():
+        device_inference = 'cuda'
+        device = 'cuda'
+    else:
+        device_inference = device
+
+    print(torch.cuda.is_available())
+
     trained_net = f'{BASE_DIR_ML}/{args.net[1:-1]}'
     print(f"Using device '{device}'.")
 
@@ -89,7 +97,7 @@ if __name__ == '__main__':
 
                 print(f'SNR: {SNR}, T60: {T60}')
 
-                dataset = Dataset_Testing_DNN_max(parameters=PARAMETERS, device=device)
+                dataset = Dataset_Testing_DNN_max(parameters=PARAMETERS, device=device_inference)
 
                 # creating dnn and pushing it to CPU/GPU(s)
                 dnn = DNN_max(output_classes=dataset.get_num_classes())
@@ -98,7 +106,7 @@ if __name__ == '__main__':
                 sd = torch.load(trained_net, map_location=map_location)
 
                 dnn.load_state_dict(sd)
-                dnn.to(device)
+                dnn.to(device_inference)
 
                 class_mapping = dataset.get_class_mapping()
                 num_classes = dataset.get_num_classes()
@@ -147,7 +155,7 @@ if __name__ == '__main__':
                                                                                              sample=bulk_sample.squeeze(dim=0),
                                                                                              target=bulk_target,
                                                                                              class_mapping=class_mapping,
-                                                                                             device=device,
+                                                                                             device=device_inference,
                                                                                              PARAMETERS=PARAMETERS,
                                                                                              MAX_THETA=MAX_THETA,
                                                                                              NUM_CLASSES=NUM_CLASSES)

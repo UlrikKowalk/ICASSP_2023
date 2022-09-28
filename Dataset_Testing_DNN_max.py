@@ -8,6 +8,7 @@ import scipy.io as sio
 import torch
 import torchaudio
 from matplotlib import pyplot as plt
+from scipy.signal import oaconvolve
 from torch.utils.data import Dataset
 
 from Coordinates import Coordinates
@@ -178,32 +179,33 @@ class Dataset_Testing_DNN_max(Dataset):
 
         return ir
 
-    # def generate_sample_GPU(self, room_dim, rt_60_desired, source_position, base_signal):
-    #
-    #     beta = gpuRIR.beta_SabineEstimation(room_sz=room_dim, T60=rt_60_desired)
-    #     rirs = gpuRIR.simulateRIR(room_sz=room_dim,
-    #                               beta=beta,
-    #                               pos_src=source_position,
-    #                               pos_rcv=(self.mic_coordinates + self.mic_center),
-    #                               nb_img=(2, 2, 2),
-    #                               Tmax=(self.len_IR / self.sample_rate),
-    #                               fs=self.sample_rate)
-    #
-    #     x = np.zeros(shape=(self.num_channels + 1, base_signal.shape[1] + rirs.shape[2] - 1))
-    #     for channel in range(self.num_channels):
-    #         x[channel, :] = oaconvolve(rirs[0, channel, :], base_signal[0].cpu().detach().numpy(), mode='full')
-    #
-    #     # calculate time difference of source signal in samples
-    #     dist_samples = int(self.calculate_mic_distance(self.mic_center, source_position)/self.nC*self.sample_rate)
-    #     #  shift the base signal -> simulate wireless transmission
-    #     base_signal = torch.roll(input=base_signal, shifts=dist_samples, dims=-1)
-    #
-    #     # last channel is clean signal
-    #     x[self.num_channels, 0:len(base_signal[0])] = base_signal[0].cpu().detach().numpy()
-    #
-    #     x = torch.tensor(x, device=self.device, dtype=torch.float32)
-    #
-    #     return x
+    def generate_sample_GPU(self, room_dim, rt_60_desired, source_position, base_signal):
+
+        beta = gpuRIR.beta_SabineEstimation(room_sz=room_dim, T60=rt_60_desired)
+        rirs = gpuRIR.simulateRIR(room_sz=room_dim,
+                                  beta=beta,
+                                  pos_src=source_position,
+                                  pos_rcv=(self.mic_coordinates + self.mic_center),
+                                  nb_img=(2, 2, 2),
+                                  Tmax=(self.len_IR / self.sample_rate),
+                                  fs=self.sample_rate)
+
+        x = np.zeros(shape=(self.num_channels + 1, base_signal.shape[1] + rirs.shape[2] - 1))
+        for channel in range(self.num_channels):
+            x[channel, :] = oaconvolve(rirs[0, channel, :], base_signal[0].cpu().detach().numpy(), mode='full')
+
+        # calculate time difference of source signal in samples
+        dist_samples = int(self.calculate_mic_distance(self.mic_center, source_position)/self.nC*self.sample_rate)
+        #  shift the base signal -> simulate wireless transmission
+        base_signal = torch.roll(input=base_signal, shifts=dist_samples, dims=-1)
+
+        # last channel is clean signal
+        x[self.num_channels, 0:len(base_signal[0])] = base_signal[0].cpu().detach().numpy()
+
+        print('gpu')
+        x = torch.tensor(x, device=self.device, dtype=torch.float32)
+
+        return x
 
     def generate_sample_CPU(self, room_dim, rt_60_desired, source_position, base_signal, array, mic_center):
 
@@ -318,9 +320,14 @@ class Dataset_Testing_DNN_max(Dataset):
                                   self.max_uncertainty).generate(torch.tensor(self.mic_coordinates_array))
 
         # Signals are generated according to deviant geometry
-        x = self.generate_sample_CPU(room_dim=room_dim, rt_60_desired=rt_60_desired,
-                                     source_position=source_position, base_signal=base_signal,
-                                     array=coordinates, mic_center=mic_center)
+        if self.device == 'cpu':
+            x = self.generate_sample_CPU(room_dim=room_dim, rt_60_desired=rt_60_desired,
+                                         source_position=source_position, base_signal=base_signal,
+                                         array=coordinates, mic_center=mic_center)
+        else:
+            x = self.generate_sample_GPU(room_dim=room_dim, rt_60_desired=rt_60_desired,
+                                         source_position=source_position, base_signal=base_signal,
+                                         array=coordinates, mic_center=mic_center)
 
         # Generate noise at specific level
         snr_desired = self.max_snr - torch.rand(1) * np.abs(self.max_snr - self.min_snr)

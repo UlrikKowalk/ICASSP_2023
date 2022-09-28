@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 # import COLORS
-
+from matplotlib import colors
 
 list_files = [
     'coordinates_known_GADOAEmax_SNR_20_T60_0.5_uncertainty_0.0',
@@ -160,8 +160,8 @@ plt.close()
 fig1, axs = plt.subplots(2, sharex=True)
 axs[0].plot(data_srp_acc[0:11], 'k:', label='SRP-PHAT')
 axs[0].plot(data_music_acc[0:11], 'k--', label='MUSIC')
-axs[0].plot(data_dnn_acc[0:11], 'k-x', label='GADOAE_max')
-axs[0].plot(data_dnn_acc[11:22], 'k-d', label='GADOAE_full')
+axs[0].plot(data_dnn_acc[0:11], '-x', color = '0.0', label='GADOAE_max')
+axs[0].plot(data_dnn_acc[11:22], '-d', color = '0.0', label='GADOAE_full')
 # axs[0].plot(data_dnn_acc[22:33], 'k-', label='GADOAE_red')
 
 # plt.title('Effect of coordinate deviation on DOA estimation Accuracy [T60=0.5s, SNR=20dB]')
@@ -169,7 +169,7 @@ axs[0].set_xticks(range(0, 11))
 axs[0].set_xticklabels(x_labels)
 axs[0].set_yticks([70, 80, 90, 100])
 axs[0].set_axisbelow(True)
-# axs[0].set(ylim = [70, 105])
+axs[0].set(ylim=[70, 101])
 axs[0].yaxis.grid(color='lightgray', linestyle='dashed')
 axs[0].set(ylabel ='Accuracy [%]')
 # axs[0].xlabel('Deviation [m]')
@@ -181,8 +181,8 @@ plt.gcf().subplots_adjust(bottom=0.2)
 ### RMSE
 axs[1].plot(data_srp_rmse[0:11], 'k:', label='SRP-PHAT')
 axs[1].plot(data_music_rmse[0:11], 'k--', label='MUSIC')
-axs[1].plot(data_dnn_rmse[0:11], 'k-x', label='GADOAE_max')
-axs[1].plot(data_dnn_rmse[11:22], 'k-d', label='GADOAE_full')
+axs[1].plot(data_dnn_rmse[0:11], '-x', color = '0.0', label='GADOAE_max')
+axs[1].plot(data_dnn_rmse[11:22], '-d', color = '0.0', label='GADOAE_full')
 # axs[1].plot(data_dnn_rmse[22:33], 'k-', label='GADOAE_red')
 
 # plt.title('Effect of coordinate deviation on DOA estimation performance')

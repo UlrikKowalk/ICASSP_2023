@@ -74,6 +74,11 @@ if __name__ == '__main__':
     print(f'Net: {args.net[1:-1]}')
 
     device = "cpu"
+    if torch.cuda.is_available():
+        device_inference = 'cuda'
+    else:
+        device_inference = device
+
     trained_net = f'{BASE_DIR_ML}/{args.net[1:-1]}'
     print(f"Using device '{device}'.")
 
@@ -100,7 +105,7 @@ if __name__ == '__main__':
                 sd = torch.load(trained_net, map_location=map_location)
 
                 dnn.load_state_dict(sd)
-                dnn.to(device)
+                dnn.to(device_inference)
 
                 class_mapping = dataset.get_class_mapping()
                 num_classes = dataset.get_num_classes()
@@ -149,7 +154,7 @@ if __name__ == '__main__':
                                                                                              sample=bulk_sample.squeeze(dim=0),
                                                                                              target=bulk_target,
                                                                                              class_mapping=class_mapping,
-                                                                                             device=device,
+                                                                                             device=device_inference,
                                                                                              PARAMETERS=PARAMETERS,
                                                                                              MAX_THETA=MAX_THETA,
                                                                                              NUM_CLASSES=NUM_CLASSES)
