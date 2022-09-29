@@ -19,7 +19,7 @@ EPOCHS = 1000
 NUM_CLASSES = 72
 BATCH_SIZE = 32
 LEARNING_RATE = 0.0001
-NUM_WORKERS = 15
+NUM_WORKERS = 16
 
 BASE_DIR_ML = os.getcwd()
 SAMPLE_DIR_GENERATIVE = BASE_DIR_ML + "/libriSpeechExcerpt/"
@@ -46,7 +46,7 @@ PARAMETERS = {'base_dir': BASE_DIR_ML,
               'frame_length': 256,
               'num_channels': 5,
               'max_sensor_spread': 0.2, #lookup noise: only up to 0.2
-              'min_array_width': 0.2,
+              'min_array_width': 0.4,
               'rasterize_array': True,
               'sensor_grid_digits': 3, #2: 0.01m
               'num_classes': 72,
