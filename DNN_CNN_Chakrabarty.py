@@ -18,14 +18,14 @@ class DNN_CNN_Chakrabarty(nn.Module):
 
         self.conv1 = nn.Sequential(
             # 64@5x128 -> 64@5x127
-            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=(2, 2), stride=(1, 1), padding=(0, 0)),
+            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=(1, 2), stride=(1, 1), padding=(0, 0)),
             nn.ReLU(),
             nn.Dropout2d(0.5)
         )
 
         self.conv2 = nn.Sequential(
             # 64@5x127 -> 64@5x126
-            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=(2, 2), stride=(1, 1), padding=(0, 0)),
+            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=(1, 2), stride=(1, 1), padding=(0, 0)),
             nn.ReLU(),
             nn.Dropout2d(0.5)
         )
