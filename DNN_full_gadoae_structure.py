@@ -8,11 +8,10 @@ import matplotlib.pyplot as plt
 
 class DNN_full_gadoae_structure(nn.Module):
 
-    def __init__(self, num_channels, num_dimensions, output_classes):
+    def __init__(self, output_classes):
         super().__init__()
 
-        self.desired_width = 28
-        self.num_input = int(num_channels * (num_channels - 1) / 2 * self.desired_width)
+        self.num_input = 280
         self.num_classes = output_classes
 
         self.flatten0 = nn.Flatten()

@@ -8,11 +8,11 @@ import matplotlib.pyplot as plt
 
 class DNN_max_gadoae_structure(nn.Module):
 
-    def __init__(self, num_channels, num_dimensions, output_classes):
+    def __init__(self, output_classes):
         super().__init__()
 
-        self.num_input = int(num_channels * (num_channels - 1) / 2)
         self.num_classes = output_classes
+        self.num_input = 10
 
         self.flatten0 = nn.Flatten()
 
