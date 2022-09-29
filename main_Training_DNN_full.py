@@ -5,7 +5,7 @@ import torch.nn
 from torch import nn
 from torch.utils.tensorboard import SummaryWriter
 
-from DNN_full import DNN_full
+from DNN_full_gadoae_structure import DNN_full_gadoae_structure
 from Dataset_Training_DNN_full import Dataset_Training_DNN_full
 from Timer import Timer
 from Training_DNN import Training_DNN
@@ -47,15 +47,15 @@ PARAMETERS = {'base_dir': BASE_DIR_ML,
               'num_channels': 5,
               'max_sensor_spread': 0.2, #lookup noise: only up to 0.2
               'min_array_width': 0.2,
-              'rasterize_array': False,
-              'sensor_grid_digits': 2, #2: 0.01m
+              'rasterize_array': True,
+              'sensor_grid_digits': 3, #2: 0.01m
               'num_classes': 72,
               'num_samples': NUM_SAMPLES,
               'max_uncertainty': 0.00,
               'dimensions_array': 2}
 
 is_training = True
-is_continue = True
+is_continue = False
 
 
 def boolean_string(s):
@@ -89,7 +89,7 @@ if __name__ == '__main__':
         dataset = Dataset_Training_DNN_full(parameters=PARAMETERS, device=device)
 
         # creating dnn and pushing it to CPU/GPU(s)
-        dnn = DNN_full(output_classes=dataset.get_num_classes())
+        dnn = DNN_full_gadoae_structure(output_classes=dataset.get_num_classes())
 
         if is_continue:
             sd = torch.load(trained_net)

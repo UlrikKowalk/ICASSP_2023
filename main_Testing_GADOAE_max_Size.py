@@ -7,19 +7,20 @@ import time
 import numpy as np
 import pandas as pd
 import torch.nn
+from matplotlib import pyplot as plt
 from torch.utils.data import DataLoader
 
 import Evaluation
 from DNN_GADOAE5_max import DNN_GADOAE5_max
-from Dataset_Testing_GADOAE_max_Speed import Dataset_Testing_GADOAE_max_Speed
+from Dataset_Testing_GADOAE_max_Size import Dataset_Testing_GADOAE_max_Size
 from MUSIC import MUSIC
 from SRP_PHAT import SRP_PHAT
 
-NUM_SAMPLES = 3
+NUM_SAMPLES = 10000
 BATCH_SIZE = 1
 MAX_THETA = 360.0
 NUM_CLASSES = 72
-NUM_WORKERS = 1
+NUM_WORKERS = 15
 
 BASE_DIR_ML = os.getcwd()
 SAMPLE_DIR_GENERATIVE = BASE_DIR_ML + "/libriSpeechExcerpt/"
@@ -27,7 +28,7 @@ NOISE_TABLE = BASE_DIR_ML + "/noise/noise_table.mat"
 
 LIST_SNR = [20]
 LIST_T60 = [0.50]
-LIST_UNCERTAINTY = [0.00]#, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10]
+LIST_UNCERTAINTY = [0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10]
 
 PARAMETERS = {'base_dir': BASE_DIR_ML,
               'sample_dir': SAMPLE_DIR_GENERATIVE,
@@ -67,19 +68,15 @@ def boolean_string(s):
 if __name__ == '__main__':
 
     torch.multiprocessing.set_sharing_strategy('file_system')
-
-    parser = argparse.ArgumentParser(description='Parameters')
-    parser.add_argument('net', type=ascii)
-    args = parser.parse_args()
-
-    print(f'Net: {args.net[1:-1]}')
-
     device = "cpu"
-    trained_net = f'{BASE_DIR_ML}/{args.net[1:-1]}'
     print(f"Using device '{device}'.")
+    list_mean = []
 
     for SNR in LIST_SNR:
         for T60 in LIST_T60:
+
+
+
             for UNCERTAINTY in LIST_UNCERTAINTY:
 
                 PARAMETERS['min_snr'] = SNR
@@ -88,21 +85,9 @@ if __name__ == '__main__':
                 PARAMETERS['max_rt_60'] = T60
                 PARAMETERS['max_uncertainty'] = UNCERTAINTY
 
-                print(f'SNR: {SNR}, T60: {T60}')
+                print(f'SNR: {SNR}, T60: {T60}, UNCERTAINTY: {UNCERTAINTY}')
 
-                dataset = Dataset_Testing_GADOAE_max_Speed(parameters=PARAMETERS, device=device)
-
-                # creating dnn and pushing it to CPU/GPU(s)
-                dnn = DNN_GADOAE5_max(num_channels=PARAMETERS['num_channels'],
-                          num_dimensions=PARAMETERS['dimensions_array'],
-                          output_classes=dataset.get_num_classes())
-
-                map_location = torch.device(device)
-                sd = torch.load(trained_net, map_location=map_location)
-
-                dnn.load_state_dict(sd)
-                dnn.to(device)
-
+                dataset = Dataset_Testing_GADOAE_max_Size(parameters=PARAMETERS, device=device)
                 class_mapping = dataset.get_class_mapping()
                 num_classes = dataset.get_num_classes()
 
@@ -114,20 +99,6 @@ if __name__ == '__main__':
                 list_ir_type_testing = []
 
                 print('Testing')
-
-                list_predictions = []
-                list_predictions_srpphat = []
-                list_predictions_music = []
-                list_targets = []
-                list_var = []
-                list_kalman = []
-                list_error = []
-                list_error_srpphat = []
-                list_error_music = []
-
-                time_dnn = 0
-                time_srp = 0
-                time_music = 0
 
                 num_zeros = int(np.ceil(np.log10(NUM_SAMPLES)) + 1)
 
@@ -142,109 +113,24 @@ if __name__ == '__main__':
 
                 idx = 0
 
-                list_weird = []
                 list_occ = [0] * NUM_CLASSES
 
-                for bulk_sample, bulk_target, coordinates, parameters, y in test_data_loader:
+                list_size = []
 
-                    t = time.time()
-                    srp_phat = SRP_PHAT(num_channels=y.shape[1], coordinates=coordinates, parameters=PARAMETERS,
-                                        device=device)
-                    predicted_srpphat, _ = Evaluation.predict_srp_phat(model=srp_phat,
-                                                                              sample=y.squeeze(dim=0),
-                                                                              target=bulk_target,
-                                                                              class_mapping=class_mapping,
-                                                                              PARAMETERS=PARAMETERS,
-                                                                              MAX_THETA=MAX_THETA,
-                                                                              NUM_CLASSES=NUM_CLASSES)
-                    time_srp += time.time() - t
+                idx = 0
 
-                    t = time.time()
-                    music = MUSIC(num_channels=y.shape[1], coordinates=coordinates, parameters=PARAMETERS)
-                    predicted_music, _ = Evaluation.predict_music(model=music,
-                                                                              sample=y.squeeze(dim=0),
-                                                                              target=bulk_target,
-                                                                              class_mapping=class_mapping,
-                                                                              PARAMETERS=PARAMETERS,
-                                                                              MAX_THETA=MAX_THETA,
-                                                                              NUM_CLASSES=NUM_CLASSES)
-                    time_music += time.time() - t
-
-                    t = time.time()
-                    predicted, expected, variance, kalman = Evaluation.predict_with_interpolation(model=dnn,
-                                                                                             sample=bulk_sample.squeeze(dim=0),
-                                                                                             target=bulk_target,
-                                                                                             class_mapping=class_mapping,
-                                                                                             device=device,
-                                                                                             PARAMETERS=PARAMETERS,
-                                                                                             MAX_THETA=MAX_THETA,
-                                                                                             NUM_CLASSES=NUM_CLASSES)
-
-                    time_dnn += time.time() - t + float(parameters['elapsed_feature'])
-
-                    list_occ[int(expected)] += 1
-
-                    list_predictions.append(predicted)
-                    list_predictions_srpphat.append(predicted_srpphat)
-                    list_predictions_music.append(predicted_music)
-                    list_targets.append(expected)
-                    # list_var.append(variance)
-                    # list_kalman.append(kalman)
-                    list_rt_60_testing.append(parameters['rt_60'])
-                    list_snr_testing.append(parameters['snr'])
-                    list_signal_type_testing.append(parameters['signal_type'])
-
-                    list_error.append(Evaluation.angular_error(expected, predicted, NUM_CLASSES) / NUM_CLASSES * MAX_THETA)
-                    list_error_srpphat.append(
-                        Evaluation.angular_error(expected, predicted_srpphat, NUM_CLASSES) / NUM_CLASSES * MAX_THETA)
-                    list_error_music.append(
-                        Evaluation.angular_error(expected, predicted_music, NUM_CLASSES) / NUM_CLASSES * MAX_THETA)
-
-                    if list_error[idx] > 10:
-                        list_weird.append((expected, predicted))
-
-                    print(
-                        f"{idx:0{num_zeros}d}/{NUM_SAMPLES:0{num_zeros}d} DNN: Angular error: {list_error[idx]} degrees")
-                    print(
-                        f"{idx:0{num_zeros}d}/{NUM_SAMPLES:0{num_zeros}d} SRP: Angular error: {list_error_srpphat[idx]} degrees")
-                    print(
-                        f"{idx:0{num_zeros}d}/{NUM_SAMPLES:0{num_zeros}d} MUSIC: Angular error: {list_error_music[idx]} degrees")
-
+                for max_size in test_data_loader:
+                    list_size.append(max_size.item())
+                    print(idx)
                     idx += 1
 
-                # Write results to pandas table
-                df = pd.DataFrame({
-                    'Target': list_targets,
-                    'Prediction': list_predictions,
-                    'Prediction_SRPPHAT': list_predictions_srpphat,
-                    'Prediction_MUSIC': list_predictions_music,
-                    # 'Tracked': list_kalman,
-                    'T60': list_rt_60_testing,
-                    'SNR': list_snr_testing,
-                    'Signal Type': list_signal_type_testing
-                })
-                df.to_csv(
-                    path_or_buf=f'Results/coordinates_known_GADOAEmax_SNR_{SNR}_T60_{T60}_uncertainty_{UNCERTAINTY}.csv',
-                    index=False)
+                mean_max = np.mean(list_size)
+                list_mean.append(np.mean(list_size))
 
-                rmse_GADOAEmax = math.sqrt(np.square(list_error).mean())
-                rmse_SRPPHAT = math.sqrt(np.square(list_error_srpphat).mean())
-                rmse_MUSIC = math.sqrt(np.square(list_error_music).mean())
 
-                acc_model, acc_srpphat, acc_music = Evaluation.calculate_accuracy(df, NUM_CLASSES)
-
-                print(
-                    f"GADOAE_max: Average angular error: {np.mean(list_error)} [{np.median(list_error)}] degrees, RMSE: {rmse_GADOAEmax}, Accuracy: {acc_model}")
-                print(
-                    f"SRP-PHAT: Average angular error: {np.mean(list_error_srpphat)} [{np.median(list_error_srpphat)}] degrees, RMSE: {rmse_SRPPHAT}, Accuracy: {acc_srpphat}")
-                print(
-                    f"MUSIC: Average angular error: {np.mean(list_error_music)} [{np.median(list_error_music)}] degrees, RMSE: {rmse_MUSIC}, Accuracy: {acc_music}")
-
-    # Evaluation.plot_error(df=df, num_classes=NUM_CLASSES)
-    print('-------- Time: --------')
-    print(f'DNN: {time_dnn}s - Improvement oder Music: {time_dnn/time_srp*100}%, Improvement over SRP-PHAT: {time_dnn/time_music*100}%')
-    print(f'SRP-PHAT: {time_srp}s')
-    print(f'MUSIC: {time_music}s')
+    print(list_mean)
+    plt.plot(list_mean)
+    plt.show()
     print("done.")
 
 

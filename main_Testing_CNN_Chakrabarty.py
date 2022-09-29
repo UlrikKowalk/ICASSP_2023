@@ -14,19 +14,19 @@ from Dataset_Testing_CNN_Chakrabarty import Dataset_Testing_CNN_Chakrabarty
 from MUSIC import MUSIC
 from SRP_PHAT import SRP_PHAT
 
-NUM_SAMPLES = 10000
+NUM_SAMPLES = 100
 BATCH_SIZE = 1
 MAX_THETA = 360.0
 NUM_CLASSES = 72
-NUM_WORKERS = 16
+NUM_WORKERS = 1
 
 BASE_DIR_ML = os.getcwd() + ""
 SAMPLE_DIR_GENERATIVE = BASE_DIR_ML + "/libriSpeechExcerpt/"
 NOISE_TABLE = BASE_DIR_ML + "/noise/noise_table.mat"
 
-LIST_SNR = [10, 20]
-LIST_T60 = [0.13, 0.5]#[0.13, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-LIST_UNCERTAINTY = [0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10]
+LIST_SNR = [20]
+LIST_T60 = [0.5]#[0.13, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+LIST_UNCERTAINTY = [0.00]#, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10]
 
 PARAMETERS = {'base_dir': BASE_DIR_ML,
               'sample_dir': SAMPLE_DIR_GENERATIVE,
@@ -49,7 +49,7 @@ PARAMETERS = {'base_dir': BASE_DIR_ML,
               'num_channels': 5,
               'max_sensor_spread': 0.2, #lookup noise only up to 0.2
               'rasterize_array': True,
-              'sensor_grid_digits': 3, #2: 0.01m
+              'sensor_grid_digits': 2, #2: 0.01m
               'num_classes': 72,
               'num_samples': NUM_SAMPLES,
               'max_uncertainty': 0.00,
@@ -191,7 +191,7 @@ if __name__ == '__main__':
                     if list_error[idx] > 10:
                         list_weird.append((expected, predicted))
 
-                    print(f"{idx:0{num_zeros}d}/{NUM_SAMPLES:0{num_zeros}d} CNN_flat: Angular error: {list_error[idx]} degrees")
+                    print(f"{idx:0{num_zeros}d}/{NUM_SAMPLES:0{num_zeros}d} CNN_Chakrabarty: Angular error: {list_error[idx]} degrees")
                     print(f"{idx:0{num_zeros}d}/{NUM_SAMPLES:0{num_zeros}d} SRP: Angular error: {list_error_srpphat[idx]} degrees")
                     print(f"{idx:0{num_zeros}d}/{NUM_SAMPLES:0{num_zeros}d} MUSIC: Angular error: {list_error_music[idx]} degrees")
 
@@ -219,7 +219,7 @@ if __name__ == '__main__':
                 acc_model, acc_srpphat, acc_music = Evaluation.calculate_accuracy(df, NUM_CLASSES)
 
                 print(
-                    f"CNN_flat: Average angular error: {np.mean(list_error)} [{np.median(list_error)}] degrees, RMSE: {rmse_CNN}, Accuracy: {acc_model}")
+                    f"CNN_Chakrabarty: Average angular error: {np.mean(list_error)} [{np.median(list_error)}] degrees, RMSE: {rmse_CNN}, Accuracy: {acc_model}")
                 print(
                     f"SRP-PHAT: Average angular error: {np.mean(list_error_srpphat)} [{np.median(list_error_srpphat)}] degrees, RMSE: {rmse_SRPPHAT}, Accuracy: {acc_srpphat}")
                 print(

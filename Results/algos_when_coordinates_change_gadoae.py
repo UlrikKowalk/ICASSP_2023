@@ -51,7 +51,7 @@ filename = 'GADOAE_when_coordinates_change_0-50_BOTH'
 # filename = filename.replace('0-50','0-13')
 
 
-x_labels = ['0.0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1.0']
+x_labels = ['0.00', '0.01', '0.02', '0.03', '0.04', '0.05', '0.06', '0.07', '0.08', '0.09', '0.10']
 
 
 def set_axis_style(ax, labels):
@@ -86,6 +86,12 @@ def calculate_rmse(prediction, label, num_classes):
         return np.sqrt(np.mean(np.power(error_list, 2)))
 
 
+def calculate_mae(prediction, label, num_classes):
+    if len(prediction) > 0:
+        error_list = angular_error(prediction, label, num_classes)
+        return np.mean(error_list)
+
+
 num_classes = 72
 margin = 1
 
@@ -95,6 +101,9 @@ data_music_acc = []
 data_dnn_rmse = []
 data_srp_rmse = []
 data_music_rmse = []
+data_dnn_mae = []
+data_srp_mae = []
+data_music_mae = []
 
 fac = 5.0
 
@@ -103,72 +112,68 @@ for idx, item in enumerate(list_files):
 
     data_dnn_acc.append(calculate_accuracy(df['Prediction'].tolist(), df['Target'].tolist(), num_classes, 1))
     data_dnn_rmse.append(calculate_rmse(df['Prediction'].tolist(), df['Target'].tolist(), num_classes))
+    data_dnn_mae.append(calculate_mae(df['Prediction'].tolist(), df['Target'].tolist(), num_classes))
 
     data_srp_acc.append(calculate_accuracy(df['Prediction_SRPPHAT'].tolist(), df['Target'].tolist(), num_classes, 1))
     data_music_acc.append(calculate_accuracy(df['Prediction_MUSIC'].tolist(), df['Target'].tolist(), num_classes, 1))
     data_srp_rmse.append(calculate_rmse(df['Prediction_SRPPHAT'].tolist(), df['Target'].tolist(), num_classes))
     data_music_rmse.append(calculate_rmse(df['Prediction_MUSIC'].tolist(), df['Target'].tolist(), num_classes))
-
-# ACCURACY
-
-fig1, ax = plt.subplots()
-plt.plot(data_dnn_acc[0:11], 'b', label='GADOAE_max')
-plt.plot(data_dnn_acc[11:22], 'c', label='GADOAE_full')
-plt.plot(data_srp_acc[0:11], 'r', label='SRP-PHAT')
-plt.plot(data_music_acc[0:11], 'g', label='MUSIC')
-
-plt.title('Effect of coordinate deviation on DOA estimation Accuracy [T60=0.5s, SNR=20dB]')
-ax.set_xticks(range(0, 11))
-ax.set_xticklabels(x_labels)
-ax.set_axisbelow(True)
-ax.yaxis.grid(color='lightgray', linestyle='dashed')
-plt.ylabel('Accuracy [%]')
-plt.xlabel('Deviation [m]')
-fig1.set_size_inches(7, 4)
-plt.legend()
-plt.ylim([0,100])
-plt.gcf().subplots_adjust(bottom=0.2)
-# plt.show()
-
-plt.savefig(f'GADOAE_when_coordinates_change_ACCURACY', bbox_inches='tight', transparent="True", pad_inches=0.1, dpi=300)
-plt.close()
+    data_srp_mae.append(calculate_mae(df['Prediction_SRPPHAT'].tolist(), df['Target'].tolist(), num_classes))
+    data_music_mae.append(calculate_mae(df['Prediction_MUSIC'].tolist(), df['Target'].tolist(), num_classes))
 
 
-# RMSE
+### BOTH with RMSE
 
-fig2, ax = plt.subplots()
-plt.plot(data_dnn_rmse[0:11], 'b', label='GADOAE_max')
-plt.plot(data_dnn_rmse[11:22], 'c', label='GADOAE_full')
-plt.plot(data_srp_rmse[0:11], 'r', label='SRP-PHAT')
-plt.plot(data_music_rmse[0:11], 'g', label='MUSIC')
-
-plt.title('Effect of coordinate deviation on DOA estimation RMSE [T60=0.5s, SNR=20dB]')
-ax.set_xticks(range(0, 11))
-ax.set_xticklabels(x_labels)
-ax.set_axisbelow(True)
-ax.yaxis.grid(color='lightgray', linestyle='dashed')
-plt.ylabel('RMSE [°]')
-plt.xlabel('Reverberation [s]')
-fig2.set_size_inches(7, 4)
-plt.legend()
-plt.gcf().subplots_adjust(bottom=0.2)
-# plt.show()
-
-plt.savefig(f'GADOAE_when_coordinates_change_RMSE', bbox_inches='tight', transparent="True", pad_inches=0.1, dpi=300)
-plt.close()
-
-
-### BOTH
 
 ### Accuracy
 fig1, axs = plt.subplots(2, sharex=True)
 axs[0].plot(data_srp_acc[0:11], 'k:', label='SRP-PHAT')
 axs[0].plot(data_music_acc[0:11], 'k--', label='MUSIC')
-axs[0].plot(data_dnn_acc[0:11], '-x', color = '0.0', label='GADOAE_max')
-axs[0].plot(data_dnn_acc[11:22], '-d', color = '0.0', label='GADOAE_full')
-axs[0].plot(data_dnn_acc[22:33], 'k-', label='GADOAE_red')
+axs[0].plot(data_dnn_acc[0:11], '-s', color = '0.0', label='Proposed')
+# axs[0].plot(data_dnn_acc[11:22], '-d', color = '0.0', label='GADOAE_full')
+# axs[0].plot(data_dnn_acc[22:33], 'k-', label='GADOAE_red')
+axs[0].set_xticks(range(0, 11))
+axs[0].set_xticklabels(x_labels)
+axs[0].set_yticks([70, 80, 90, 100])
+axs[0].set_axisbelow(True)
+axs[0].set(ylim=[70, 101])
+axs[0].yaxis.grid(color='lightgray', linestyle='dashed')
+axs[0].set(ylabel ='Accuracy [%]')
+plt.gcf().subplots_adjust(bottom=0.2)
 
-# plt.title('Effect of coordinate deviation on DOA estimation Accuracy [T60=0.5s, SNR=20dB]')
+### RMSE
+axs[1].plot(data_srp_rmse[0:11], 'k:', label='SRP-PHAT')
+axs[1].plot(data_music_rmse[0:11], 'k--', label='MUSIC')
+axs[1].plot(data_dnn_rmse[0:11], '-s', color = '0.0', label='Proposed')
+# axs[1].plot(data_dnn_rmse[11:22], '-d', color = '0.0', label='GADOAE_full')
+# axs[1].plot(data_dnn_rmse[22:33], 'k-', label='GADOAE_red')
+axs[1].set_xticks(range(0, 11))
+axs[1].set_xticklabels(x_labels)
+axs[1].set(ylim = [0, 15])
+axs[1].set_axisbelow(True)
+axs[1].yaxis.grid(color='lightgray', linestyle='dashed')
+axs[1].set(ylabel = 'RMSE [°]')
+axs[1].set(xlabel = 'Coordinate deviation [m]')
+fig1.set_size_inches(7, 4.5)
+axs[1].legend(loc='center left', bbox_to_anchor=(0.0, 1.1), framealpha=1.0)
+# plt.gcf().subplots_adjust(bottom=0.1)
+# plt.show()
+
+plt.savefig(f'{filename}_RMSE', bbox_inches='tight', transparent="True", pad_inches=0.1, dpi=300)
+plt.close()
+
+
+
+
+### BOTH with MAE
+
+### Accuracy
+fig1, axs = plt.subplots(2, sharex=True)
+axs[0].plot(data_srp_acc[0:11], 'k:', label='SRP-PHAT')
+axs[0].plot(data_music_acc[0:11], 'k--', label='MUSIC')
+axs[0].plot(data_dnn_acc[0:11], '-s', color = '0.0', label='Proposed')
+# axs[0].plot(data_dnn_acc[11:22], '-d', color = '0.0', label='GADOAE_full')
+# axs[0].plot(data_dnn_acc[22:33], 'k-', label='GADOAE_red')
 axs[0].set_xticks(range(0, 11))
 axs[0].set_xticklabels(x_labels)
 axs[0].set_yticks([70, 80, 90, 100])
@@ -182,27 +187,26 @@ axs[0].set(ylabel ='Accuracy [%]')
 # axs[0].ylim([0,100])
 plt.gcf().subplots_adjust(bottom=0.2)
 
-### RMSE
-axs[1].plot(data_srp_rmse[0:11], 'k:', label='SRP-PHAT')
-axs[1].plot(data_music_rmse[0:11], 'k--', label='MUSIC')
-axs[1].plot(data_dnn_rmse[0:11], '-x', color = '0.0', label='GADOAE_max')
-axs[1].plot(data_dnn_rmse[11:22], '-d', color = '0.0', label='GADOAE_full')
-axs[1].plot(data_dnn_rmse[22:33], 'k-', label='GADOAE_red')
-
-# plt.title('Effect of coordinate deviation on DOA estimation performance')
+### MAE
+axs[1].plot(data_srp_mae[0:11], 'k:', label='SRP-PHAT')
+axs[1].plot(data_music_mae[0:11], 'k--', label='MUSIC')
+axs[1].plot(data_dnn_mae[0:11], '-s', color = '0.0', label='Proposed')
+# axs[1].plot(data_dnn_rmse[11:22], '-d', color = '0.0', label='GADOAE_full')
+# axs[1].plot(data_dnn_rmse[22:33], 'k-', label='GADOAE_red')
 axs[1].set_xticks(range(0, 11))
 axs[1].set_xticklabels(x_labels)
-axs[1].set(ylim = [0, 25])
+axs[1].set(ylim = [1.5, 3])
 axs[1].set_axisbelow(True)
 axs[1].yaxis.grid(color='lightgray', linestyle='dashed')
-axs[1].set(ylabel = 'RMSE [°]')
+axs[1].set(ylabel = 'MAE [°]')
 axs[1].set(xlabel = 'Coordinate deviation [m]')
-# fig2.set_size_inches(7, 3.5)
+fig1.set_size_inches(7, 4.5)
 axs[1].legend(loc='center left', bbox_to_anchor=(0.0, 1.1), framealpha=1.0)
 # plt.gcf().subplots_adjust(bottom=0.1)
 # plt.show()
 
-plt.savefig(filename, bbox_inches='tight', transparent="True", pad_inches=0.1, dpi=300)
+plt.savefig(f'{filename}_MAE', bbox_inches='tight', transparent="True", pad_inches=0.1, dpi=300)
 plt.close()
 
 print('done.')
+
