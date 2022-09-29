@@ -9,16 +9,16 @@ import torch.nn
 from torch.utils.data import DataLoader
 
 import Evaluation
-from DNN_full import DNN_full
+from DNN_full_gadoae_structure import DNN_full_gadoae_structure
 from Dataset_Testing_DNN_full import Dataset_Testing_DNN_full
 from MUSIC import MUSIC
 from SRP_PHAT import SRP_PHAT
 
-NUM_SAMPLES = 10000
+NUM_SAMPLES = 100
 BATCH_SIZE = 1
 MAX_THETA = 360.0
 NUM_CLASSES = 72
-NUM_WORKERS = 16
+NUM_WORKERS = 1
 
 BASE_DIR_ML = os.getcwd() + ""
 SAMPLE_DIR_GENERATIVE = BASE_DIR_ML + "/libriSpeechExcerpt/"
@@ -26,7 +26,7 @@ NOISE_TABLE = BASE_DIR_ML + "/noise/noise_table.mat"
 
 LIST_SNR = [20]
 LIST_T60 = [0.5]
-LIST_UNCERTAINTY = [0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10]
+LIST_UNCERTAINTY = [0.00]#, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10]
 
 PARAMETERS = {'base_dir': BASE_DIR_ML,
               'sample_dir': SAMPLE_DIR_GENERATIVE,
@@ -48,7 +48,7 @@ PARAMETERS = {'base_dir': BASE_DIR_ML,
               'frame_length': 256,
               'num_channels': 5,
               'max_sensor_spread': 0.2, #lookup noise: only up to 0.2
-              'min_array_width': 0.2,
+              'min_array_width': 0.4,
               'rasterize_array': True,
               'sensor_grid_digits': 3, #2: 0.01m
               'num_classes': 72,
@@ -97,7 +97,7 @@ if __name__ == '__main__':
                 dataset = Dataset_Testing_DNN_full(parameters=PARAMETERS, device=device)
 
                 # creating dnn and pushing it to CPU/GPU(s)
-                dnn = DNN_full(output_classes=dataset.get_num_classes())
+                dnn = DNN_full_gadoae_structure(output_classes=dataset.get_num_classes())
 
                 map_location = torch.device(device)
                 sd = torch.load(trained_net, map_location=map_location)
@@ -210,7 +210,7 @@ if __name__ == '__main__':
                     'Signal Type': list_signal_type_testing
                 })
                 df.to_csv(
-                    path_or_buf=f'Results/coordinates_unknown_DNNfull_SNR_{SNR}_T60_{T60}_uncertainty_{UNCERTAINTY}.csv',
+                    path_or_buf=f'Results/coordinates_unknown_DNNfullgad_SNR_{SNR}_T60_{T60}_uncertainty_{UNCERTAINTY}.csv',
                     index=False)
 
                 rmse_DNN = math.sqrt(np.square(list_error).mean())

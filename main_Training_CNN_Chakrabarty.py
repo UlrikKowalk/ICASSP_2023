@@ -41,14 +41,14 @@ PARAMETERS = {'base_dir': BASE_DIR_ML,
               'mic_center_delta': [0.5, 0.5, 0.5],
               'min_source_distance': 1.0, #1.0
               'max_source_distance': 3.0, #3.0
-              'proportion_noise_input': 0.5,
+              'proportion_noise_input': 1.0,
               'noise_lookup': True,
               'frame_length': 256,
               'num_channels': 5,
               'max_sensor_spread': 0.2, #lookup noise: only up to 0.2
               'min_array_width': 0.2,
-              'rasterize_array': False,
-              'sensor_grid_digits': 2, #2: 0.01m
+              'rasterize_array': True,
+              'sensor_grid_digits': 3, #2: 0.01m
               'num_classes': 72,
               'num_samples': NUM_SAMPLES,
               'max_uncertainty': 0.00,

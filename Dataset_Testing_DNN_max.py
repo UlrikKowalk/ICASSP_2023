@@ -15,7 +15,7 @@ from Coordinates import Coordinates
 from Feature_DNN import Feature_DNN
 from NoiseTable import NoiseTable
 from inv_sabine import inv_sabine
-import gpuRIR
+# import gpuRIR
 
 
 class Dataset_Testing_DNN_max(Dataset):
@@ -29,6 +29,7 @@ class Dataset_Testing_DNN_max(Dataset):
         self.device = device
 
         self.mic_coordinates_array = sio.loadmat(self.base_dir + '/array_doa_dnn_5.mat')['coordinates']
+        print(self.mic_coordinates_array)
 
         self.num_channels = parameters['num_channels']
         self.max_sensor_spread = parameters['max_sensor_spread']

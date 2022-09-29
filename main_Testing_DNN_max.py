@@ -9,16 +9,16 @@ import torch.nn
 from torch.utils.data import DataLoader
 
 import Evaluation
-from DNN_max import DNN_max
+from DNN_max_gadoae_structure import DNN_max_gadoae_structure
 from Dataset_Testing_DNN_max import Dataset_Testing_DNN_max
 from MUSIC import MUSIC
 from SRP_PHAT import SRP_PHAT
 
-NUM_SAMPLES = 10
+NUM_SAMPLES = 1000
 BATCH_SIZE = 1
 MAX_THETA = 360.0
 NUM_CLASSES = 72
-NUM_WORKERS = 1
+NUM_WORKERS = 15
 
 BASE_DIR_ML = os.getcwd() + ""
 SAMPLE_DIR_GENERATIVE = BASE_DIR_ML + "/libriSpeechExcerpt/"
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     device = "cpu"
     if torch.cuda.is_available():
         device_inference = 'cuda'
-        device = 'cuda'
+        # device = 'cuda'
     else:
         device_inference = device
 
@@ -97,10 +97,10 @@ if __name__ == '__main__':
 
                 print(f'SNR: {SNR}, T60: {T60}')
 
-                dataset = Dataset_Testing_DNN_max(parameters=PARAMETERS, device=device_inference)
+                dataset = Dataset_Testing_DNN_max(parameters=PARAMETERS, device=device)
 
                 # creating dnn and pushing it to CPU/GPU(s)
-                dnn = DNN_max(output_classes=dataset.get_num_classes())
+                dnn = DNN_max_gadoae_structure(output_classes=dataset.get_num_classes())
 
                 map_location = torch.device(device)
                 sd = torch.load(trained_net, map_location=map_location)
@@ -217,7 +217,7 @@ if __name__ == '__main__':
                     'SNR': list_snr_testing,
                     'Signal Type': list_signal_type_testing
                 })
-                df.to_csv(path_or_buf=f'Results/coordinates_unknown_DNNmax_SNR_{SNR}_T60_{T60}_uncertainty_{UNCERTAINTY}.csv', index=False)
+                df.to_csv(path_or_buf=f'Results/coordinates_unknown_DNNmaxgad_SNR_{SNR}_T60_{T60}_uncertainty_{UNCERTAINTY}.csv', index=False)
 
                 rmse_DNN = math.sqrt(np.square(list_error).mean())
                 rmse_SRPPHAT = math.sqrt(np.square(list_error_srpphat).mean())
