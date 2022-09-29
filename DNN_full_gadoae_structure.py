@@ -57,7 +57,9 @@ class DNN_full_gadoae_structure(nn.Module):
 
     def forward(self, input_data):
 
-        # input shape: [X, 360]
+        input_data = self.flatten0(input_data)
+
+        # input shape: [X, 280]
         x = self.linear0(input_data)
         x = self.linear1(x)
         x = self.linear2(x)
