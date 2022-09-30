@@ -26,7 +26,7 @@ NOISE_TABLE = BASE_DIR_ML + "/noise/noise_table.mat"
 
 LIST_SNR = [20]
 LIST_T60 = [0.5]#[0.13, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-LIST_UNCERTAINTY = [0.00]#, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10]
+LIST_UNCERTAINTY = [0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10]
 
 PARAMETERS = {'base_dir': BASE_DIR_ML,
               'sample_dir': SAMPLE_DIR_GENERATIVE,
