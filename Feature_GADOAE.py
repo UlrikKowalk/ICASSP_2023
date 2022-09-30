@@ -107,12 +107,8 @@ class Feature_GADOAE:
         # append array geometry to feature vector (depending on how many dimensions we train)
         # serially [x0, x1, ..., y0, y1, ...]
         for dim in range(self.num_dimensions):
-            final_feature[slice_idx:slice_idx + self.num_channels] = torch.tensor(self.coordinates[:, dim] * 40)
+            final_feature[slice_idx:slice_idx + self.num_channels] = self.coordinates[:, dim] * 40
             slice_idx += self.num_channels
-
-        # plt.plot(final_feature)
-        # plt.show()
-        # print(final_feature)
 
         final_feature = torch.unsqueeze(final_feature, 0)
 

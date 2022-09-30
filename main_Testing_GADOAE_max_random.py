@@ -151,7 +151,7 @@ if __name__ == '__main__':
                     music = MUSIC(num_channels=y.shape[1], coordinates=coordinates, parameters=PARAMETERS)
 
                     predicted, expected, variance, kalman = Evaluation.predict_with_interpolation(model=dnn,
-                                                                                             sample=bulk_sample.squeeze(dim=0),
+                                                                                             sample=bulk_sample.squeeze(dim=0).to(device_inference),
                                                                                              target=bulk_target,
                                                                                              class_mapping=class_mapping,
                                                                                              device=device_inference,

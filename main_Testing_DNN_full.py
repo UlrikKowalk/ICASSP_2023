@@ -14,11 +14,11 @@ from Dataset_Testing_DNN_full import Dataset_Testing_DNN_full
 from MUSIC import MUSIC
 from SRP_PHAT import SRP_PHAT
 
-NUM_SAMPLES = 100
+NUM_SAMPLES = 10000
 BATCH_SIZE = 1
 MAX_THETA = 360.0
 NUM_CLASSES = 72
-NUM_WORKERS = 1
+NUM_WORKERS = 16
 
 BASE_DIR_ML = os.getcwd() + ""
 SAMPLE_DIR_GENERATIVE = BASE_DIR_ML + "/libriSpeechExcerpt/"
@@ -26,7 +26,7 @@ NOISE_TABLE = BASE_DIR_ML + "/noise/noise_table.mat"
 
 LIST_SNR = [20]
 LIST_T60 = [0.5]
-LIST_UNCERTAINTY = [0.00]#, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10]
+LIST_UNCERTAINTY = [0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10]
 
 PARAMETERS = {'base_dir': BASE_DIR_ML,
               'sample_dir': SAMPLE_DIR_GENERATIVE,
@@ -49,7 +49,7 @@ PARAMETERS = {'base_dir': BASE_DIR_ML,
               'num_channels': 5,
               'max_sensor_spread': 0.2, #lookup noise: only up to 0.2
               'min_array_width': 0.4,
-              'rasterize_array': True,
+              'rasterize_array': False,
               'sensor_grid_digits': 3, #2: 0.01m
               'num_classes': 72,
               'num_samples': NUM_SAMPLES,

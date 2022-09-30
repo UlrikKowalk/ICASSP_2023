@@ -9,21 +9,26 @@ class DNN_CNN_Chakrabarty(nn.Module):
 
         self.output_classes = output_classes
 
+        self.norm = nn.GroupNorm(num_groups=1, num_channels=1)
+
         self.conv0 = nn.Sequential(
             # 1@5x129 -> 64@4x128
             nn.Conv2d(in_channels=1, out_channels=64, kernel_size=(2, 2),  stride=(1, 1), padding=(0, 0)),
+            nn.BatchNorm2d(64),
             nn.ReLU()
         )
 
         self.conv1 = nn.Sequential(
             # 64@4x128 -> 64@3x127
             nn.Conv2d(in_channels=64, out_channels=64, kernel_size=(2, 2), stride=(1, 1), padding=(0, 0)),
+            nn.BatchNorm2d(64),
             nn.ReLU()
         )
 
         self.conv2 = nn.Sequential(
             # 64@3x127 -> 64@2x126
             nn.Conv2d(in_channels=64, out_channels=64, kernel_size=(2, 2), stride=(1, 1), padding=(0, 0)),
+            nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.Dropout2d(0.5)
         )
@@ -52,6 +57,8 @@ class DNN_CNN_Chakrabarty(nn.Module):
 
     def forward(self, input_data):
 
+        input_data = self.norm(input_data)
+
         # Neural Net
         x = self.conv0(input_data)
         x = self.conv1(x)
@@ -63,7 +70,7 @@ class DNN_CNN_Chakrabarty(nn.Module):
         x = self.linear1(x)
         predictions = self.linear2(x)
 
-        predictions = self.softmax(predictions)
+        #predictions = self.softmax(predictions)
 
         return predictions
 

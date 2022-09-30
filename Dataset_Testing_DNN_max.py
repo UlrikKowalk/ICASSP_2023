@@ -29,7 +29,6 @@ class Dataset_Testing_DNN_max(Dataset):
         self.device = device
 
         self.mic_coordinates_array = sio.loadmat(self.base_dir + '/array_doa_dnn_5.mat')['coordinates']
-        print(self.mic_coordinates_array)
 
         self.num_channels = parameters['num_channels']
         self.max_sensor_spread = parameters['max_sensor_spread']
@@ -81,7 +80,7 @@ class Dataset_Testing_DNN_max(Dataset):
 
     @staticmethod
     def normalise_level(signal):
-        return signal / torch.std(signal)
+        return signal / torch.mean(torch.std(signal, -1))
 
     @staticmethod
     def change_level(signal, level):
@@ -158,19 +157,32 @@ class Dataset_Testing_DNN_max(Dataset):
 
         # signal = F.resample(signal, fs, 8000)
 
-        # cut beginning of signal for convenience
-        start_at = 0
+        # find frames above threshold
         energy = self.generate_energy_label(signal, 0)
+        num_speech_frames = 0
+        for item in energy:
+            if item == 0:
+                num_speech_frames += 1
 
+        # cut all frames below threshold out of the sequence
+        speech_signal = torch.zeros(size=(int(num_speech_frames * self.frame_length),), device=self.device)
+        frame = 0
         for idx, item in enumerate(energy):
             if item == 0:
-                start_at = idx
-                break
-        signal = signal[start_at * self.frame_length:]
+                idx_in = idx * self.frame_length
+                idx_out = idx_in + self.frame_length
+                idx_in_speech = frame * self.frame_length
+                idx_out_speech = idx_in_speech + self.frame_length
+                speech_signal[idx_in_speech:idx_out_speech] = signal[idx_in:idx_out]
+                frame += 1
 
-        signal = self.cut_to_length(signal)
+        # fig, axs = plt.subplots(3)
+        # axs[0].plot(signal[:])
+        # axs[1].plot(energy)
+        # axs[2].plot(speech_signal[:])
+        # plt.show()
 
-        return signal
+        return self.cut_to_length(speech_signal)
 
     def load_ir(self, label):
         file_list = glob.glob(f"{self.irs_dir}/{label.item():02d}/*.wav")
@@ -374,14 +386,14 @@ class Dataset_Testing_DNN_max(Dataset):
 
             m_out_feature[frame, :] = feature.calculate_max(x[:, idx_in:idx_out])
 
-        # label_list = self.generate_energy_label(base_signal, desired_label)
+        label_list = self.generate_energy_label(base_signal, desired_label)
 
         parameters = {'snr': -255,
                       'rt_60': rt_60_desired,
                       'signal_type': signal_type}
 
         # with true coordinates made available to srp-phat and music
-        return m_out_feature, desired_label, coordinates, parameters, x
+        return m_out_feature, label_list, coordinates, parameters, x
         # return m_out_feature, desired_label, self.mic_coordinates_array, parameters, x
 
 

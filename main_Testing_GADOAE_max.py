@@ -14,11 +14,11 @@ from Dataset_Testing_GADOAE_max import Dataset_Testing_GADOAE_max
 from MUSIC import MUSIC
 from SRP_PHAT import SRP_PHAT
 
-NUM_SAMPLES = 100
+NUM_SAMPLES = 10000
 BATCH_SIZE = 1
 MAX_THETA = 360.0
 NUM_CLASSES = 72
-NUM_WORKERS = 1
+NUM_WORKERS = 16
 
 BASE_DIR_ML = os.getcwd()
 SAMPLE_DIR_GENERATIVE = BASE_DIR_ML + "/libriSpeechExcerpt/"
@@ -49,7 +49,7 @@ PARAMETERS = {'base_dir': BASE_DIR_ML,
               'num_channels': 5,
               'max_sensor_spread': 0.2, #lookup noise: only up to 0.2
               'min_array_width': 0.4,
-              'rasterize_array': True,
+              'rasterize_array': False,
               'sensor_grid_digits': 3, #2: 0.01m
               'num_classes': 72,
               'num_samples': NUM_SAMPLES,
@@ -151,7 +151,7 @@ if __name__ == '__main__':
                     music = MUSIC(num_channels=y.shape[1], coordinates=coordinates, parameters=PARAMETERS)
 
                     predicted, expected, variance, kalman = Evaluation.predict_with_interpolation(model=dnn,
-                                                                                             sample=bulk_sample.squeeze(dim=0),
+                                                                                             sample=bulk_sample.squeeze(dim=0).to(device_inference),
                                                                                              target=bulk_target,
                                                                                              class_mapping=class_mapping,
                                                                                              device=device_inference,

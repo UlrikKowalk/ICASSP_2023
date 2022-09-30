@@ -49,7 +49,7 @@ PARAMETERS = {'base_dir': BASE_DIR_ML,
               'num_channels': 5,
               'max_sensor_spread': 0.2, #lookup noise: only up to 0.2
               'min_array_width': 0.4,
-              'rasterize_array': True,
+              'rasterize_array': False,
               'sensor_grid_digits': 3, #2: 0.01m
               'num_classes': 72,
               'num_samples': NUM_SAMPLES,
@@ -151,7 +151,7 @@ if __name__ == '__main__':
                     music = MUSIC(num_channels=y.shape[1], coordinates=coordinates, parameters=PARAMETERS)
 
                     predicted, expected, variance, kalman = Evaluation.predict_with_interpolation(model=dnn,
-                                                                                             sample=bulk_sample.squeeze(dim=0),
+                                                                                             sample=bulk_sample.squeeze(dim=0).to(device_inference),
                                                                                              target=bulk_target,
                                                                                              class_mapping=class_mapping,
                                                                                              device=device_inference,

@@ -132,7 +132,6 @@ def predict_with_interpolation(model, sample, target, class_mapping, device, PAR
         max_idx = np.argmax(cost)
         estimates = FindPeaks.find_real_peaks(cost, [max_idx], MAX_THETA, NUM_CLASSES)
         estimate = FindPeaks.sort_by_strength(estimates)[0][0]
-
         if tar[0] != -255:
             estimates_per_frame.append(estimate)
             targets_per_frame.append(float(tar))
