@@ -4,6 +4,7 @@ import numpy as np
 import scipy.io as sio
 import torch
 from matplotlib import pyplot as plt, gridspec
+from scipy import spatial
 
 
 class NoiseTable:
@@ -17,10 +18,11 @@ class NoiseTable:
         print('finished.')
         self.digits = digits
         self.max_length = len(self.noise_table)
+        self.tree = spatial.KDTree(self.coordinates)
 
         # Round / discretize coordinates to certain number of digits
-        for idx, node in enumerate(self.coordinates):
-            self.coordinates[idx] = [round(i, self.digits) for i in node]
+        # for idx, node in enumerate(self.coordinates):
+        #     self.coordinates[idx] = [round(i, self.digits) for i in node]
 
     def lookup(self, coordinates, length):
 
@@ -31,13 +33,11 @@ class NoiseTable:
             coordinates[idx] = [round(i, self.digits) for i in node]
 
         # Number of samples by which noise is rolled for variability
-        shift = torch.randint(high=self.max_length, size=(1,))
+        shift = int(torch.randint(high=self.max_length, size=(1,)))
 
         for idx_node, node in enumerate(coordinates):
-            for idx, coord_set in enumerate(self.coordinates):
-                if(all(coord_set == node)):
-
-                    output_noise[idx_node, :] = torch.roll(torch.tensor(self.noise_table[:, idx]), shifts=(shift,), dims=0)
+            dist, idx = self.tree.query(node)
+            output_noise[idx_node, :] = torch.roll(torch.tensor(self.noise_table[:, idx]), shifts=(shift,), dims=0)
 
         return self.cut_to_length(output_noise, length)
 

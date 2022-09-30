@@ -10,42 +10,40 @@ class DNN_CNN_Chakrabarty(nn.Module):
         self.output_classes = output_classes
 
         self.conv0 = nn.Sequential(
-            # 1@5x129 -> 64@5x128
-            nn.Conv2d(in_channels=1, out_channels=64, kernel_size=(1, 2),  stride=(1, 1), padding=(0, 0)),
-            nn.ReLU(),
-            nn.Dropout2d(0.5)
+            # 1@5x129 -> 64@4x128
+            nn.Conv2d(in_channels=1, out_channels=64, kernel_size=(2, 2),  stride=(1, 1), padding=(0, 0)),
+            nn.ReLU()
         )
 
         self.conv1 = nn.Sequential(
-            # 64@5x128 -> 64@5x127
-            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=(1, 2), stride=(1, 1), padding=(0, 0)),
-            nn.ReLU(),
-            nn.Dropout2d(0.5)
+            # 64@4x128 -> 64@3x127
+            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=(2, 2), stride=(1, 1), padding=(0, 0)),
+            nn.ReLU()
         )
 
         self.conv2 = nn.Sequential(
-            # 64@5x127 -> 64@5x126
-            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=(1, 2), stride=(1, 1), padding=(0, 0)),
+            # 64@3x127 -> 64@2x126
+            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=(2, 2), stride=(1, 1), padding=(0, 0)),
             nn.ReLU(),
             nn.Dropout2d(0.5)
         )
 
-        # 64@5x126 -> 64*5*126 = 40320
+        # 64@2x126 -> 64*2*126 = 16128
         self.flatten0 = nn.Flatten()
 
-        # 15 -> 128
+        # 16128 -> 512
         self.linear0 = nn.Sequential(
-            nn.Linear(in_features=40320, out_features=512),
+            nn.Linear(in_features=16128, out_features=512),
             nn.ReLU(),
             nn.Dropout(p=0.5)
         )
-        # 128 -> 128
+        # 512 -> 512
         self.linear1 = nn.Sequential(
             nn.Linear(in_features=512, out_features=512),
             nn.ReLU(),
             nn.Dropout(p=0.5)
         )
-        # 128 -> 72
+        # 512 -> 72
         self.linear2 = nn.Linear(
             in_features=512, out_features=self.output_classes
         )
