@@ -25,7 +25,7 @@ SAMPLE_DIR_GENERATIVE = BASE_DIR_ML + "/libriSpeechExcerpt/"
 NOISE_TABLE = BASE_DIR_ML + "/noise/noise_table.mat"
 
 LIST_SNR = [20]
-LIST_T60 = [0.50]
+LIST_T60 = [0.5]
 LIST_UNCERTAINTY = [0.00]#, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10]
 
 PARAMETERS = {'base_dir': BASE_DIR_ML,

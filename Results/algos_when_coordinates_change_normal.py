@@ -5,41 +5,74 @@ import matplotlib.pyplot as plt
 
 
 list_files = [
-    'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.0',
-    'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.01',
-    'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.02',
-    'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.03',
-    'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.04',
-    'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.05',
-    'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.06',
-    'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.07',
-    'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.08',
-    'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.09',
-    'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.1',
+    # 'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.0',
+    # 'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.01',
+    # 'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.02',
+    # 'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.03',
+    # 'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.04',
+    # 'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.05',
+    # 'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.06',
+    # 'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.07',
+    # 'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.08',
+    # 'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.09',
+    # 'coordinates_unknown_CNNflat_SNR_20_T60_0.5_uncertainty_0.1',
+    'coordinates_unknown_CNNchakrabarty_SNR_20_T60_0.5_uncertainty_0.0',
+    'coordinates_unknown_CNNchakrabarty_SNR_20_T60_0.5_uncertainty_0.01',
+    'coordinates_unknown_CNNchakrabarty_SNR_20_T60_0.5_uncertainty_0.02',
+    'coordinates_unknown_CNNchakrabarty_SNR_20_T60_0.5_uncertainty_0.03',
+    'coordinates_unknown_CNNchakrabarty_SNR_20_T60_0.5_uncertainty_0.04',
+    'coordinates_unknown_CNNchakrabarty_SNR_20_T60_0.5_uncertainty_0.05',
+    'coordinates_unknown_CNNchakrabarty_SNR_20_T60_0.5_uncertainty_0.06',
+    'coordinates_unknown_CNNchakrabarty_SNR_20_T60_0.5_uncertainty_0.07',
+    'coordinates_unknown_CNNchakrabarty_SNR_20_T60_0.5_uncertainty_0.08',
+    'coordinates_unknown_CNNchakrabarty_SNR_20_T60_0.5_uncertainty_0.09',
+    'coordinates_unknown_CNNchakrabarty_SNR_20_T60_0.5_uncertainty_0.1',
     #
-    'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.0',
-    'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.01',
-    'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.02',
-    'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.03',
-    'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.04',
-    'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.05',
-    'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.06',
-    'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.07',
-    'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.08',
-    'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.09',
-    'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.1',
+    # 'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.0',
+    # 'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.01',
+    # 'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.02',
+    # 'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.03',
+    # 'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.04',
+    # 'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.05',
+    # 'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.06',
+    # 'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.07',
+    # 'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.08',
+    # 'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.09',
+    # 'coordinates_unknown_DNNfull_SNR_20_T60_0.5_uncertainty_0.1',
+    'coordinates_unknown_DNNfullgad_SNR_20_T60_0.5_uncertainty_0.0',
+    'coordinates_unknown_DNNfullgad_SNR_20_T60_0.5_uncertainty_0.01',
+    'coordinates_unknown_DNNfullgad_SNR_20_T60_0.5_uncertainty_0.02',
+    'coordinates_unknown_DNNfullgad_SNR_20_T60_0.5_uncertainty_0.03',
+    'coordinates_unknown_DNNfullgad_SNR_20_T60_0.5_uncertainty_0.04',
+    'coordinates_unknown_DNNfullgad_SNR_20_T60_0.5_uncertainty_0.05',
+    'coordinates_unknown_DNNfullgad_SNR_20_T60_0.5_uncertainty_0.06',
+    'coordinates_unknown_DNNfullgad_SNR_20_T60_0.5_uncertainty_0.07',
+    'coordinates_unknown_DNNfullgad_SNR_20_T60_0.5_uncertainty_0.08',
+    'coordinates_unknown_DNNfullgad_SNR_20_T60_0.5_uncertainty_0.09',
+    'coordinates_unknown_DNNfullgad_SNR_20_T60_0.5_uncertainty_0.1',
     #
-    'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.0',
-    'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.01',
-    'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.02',
-    'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.03',
-    'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.04',
-    'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.05',
-    'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.06',
-    'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.07',
-    'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.08',
-    'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.09',
-    'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.1',
+    # 'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.0',
+    # 'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.01',
+    # 'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.02',
+    # 'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.03',
+    # 'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.04',
+    # 'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.05',
+    # 'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.06',
+    # 'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.07',
+    # 'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.08',
+    # 'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.09',
+    # 'coordinates_unknown_DNNmax_SNR_20_T60_0.5_uncertainty_0.1',
+    'coordinates_unknown_DNNmaxgad_SNR_20_T60_0.5_uncertainty_0.0',
+    'coordinates_unknown_DNNmaxgad_SNR_20_T60_0.5_uncertainty_0.01',
+    'coordinates_unknown_DNNmaxgad_SNR_20_T60_0.5_uncertainty_0.02',
+    'coordinates_unknown_DNNmaxgad_SNR_20_T60_0.5_uncertainty_0.03',
+    'coordinates_unknown_DNNmaxgad_SNR_20_T60_0.5_uncertainty_0.04',
+    'coordinates_unknown_DNNmaxgad_SNR_20_T60_0.5_uncertainty_0.05',
+    'coordinates_unknown_DNNmaxgad_SNR_20_T60_0.5_uncertainty_0.06',
+    'coordinates_unknown_DNNmaxgad_SNR_20_T60_0.5_uncertainty_0.07',
+    'coordinates_unknown_DNNmaxgad_SNR_20_T60_0.5_uncertainty_0.08',
+    'coordinates_unknown_DNNmaxgad_SNR_20_T60_0.5_uncertainty_0.09',
+    'coordinates_unknown_DNNmaxgad_SNR_20_T60_0.5_uncertainty_0.1',
             ]
 
 filename = 'Algos_when_coordinates_change_0-50_BOTH'
@@ -148,7 +181,7 @@ axs[1].plot(data_dnn_rmse[11:22], '-d', color='0.0', label=r'FC$_{full}$')
 axs[1].plot(data_dnn_rmse[22:33], '-x', color='0.0', label=r'FC$_{max}$')
 axs[1].set_xticks(range(0, 11))
 axs[1].set_xticklabels(x_labels)
-axs[1].set(ylim = [-5, 90])
+axs[1].set(ylim = [-5, 100])
 axs[1].set_axisbelow(True)
 axs[1].yaxis.grid(color='lightgray', linestyle='dashed')
 axs[1].set(ylabel = 'RMSE [°]')
@@ -190,7 +223,7 @@ axs[1].plot(data_dnn_mae[11:22], '-d', color='0.0', label=r'FC$_{full}$')
 axs[1].plot(data_dnn_mae[22:33], '-x', color='0.0', label=r'FC$_{max}$')
 axs[1].set_xticks(range(0, 11))
 axs[1].set_xticklabels(x_labels)
-axs[1].set(ylim = [-5, 60])
+axs[1].set(ylim = [-5, 80])
 axs[1].set_axisbelow(True)
 axs[1].yaxis.grid(color='lightgray', linestyle='dashed')
 axs[1].set(ylabel = 'MAE [°]')
